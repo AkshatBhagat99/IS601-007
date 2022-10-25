@@ -15,7 +15,6 @@ def test_first_selection(machine):
     machine.handle_flavor("next")
     machine.handle_toppings("m&ms")
     machine.handle_toppings("done")
-    
     y = machine.inprogress_icecream[0]
     return y in ["waffle cone", "sugar cone", "cup"]  
 
