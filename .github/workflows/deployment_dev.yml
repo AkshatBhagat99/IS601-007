@@ -7,7 +7,7 @@ on:
   push:
     branches:
       - dev
-      -deployment-setup
+      - deployment-setup
 
 # Your workflows jobs.
 jobs:
