@@ -1,4 +1,5 @@
 import io
+import csv
 from flask import Blueprint, render_template, request, redirect, flash
 from werkzeug.utils import secure_filename
 from sql.db import DB
@@ -16,7 +17,13 @@ def importCSV():
         if file.filename == '':
             flash('No selected file', "warning")
             return redirect(request.url)
+
         # TODO importcsv-1 check that it's a .csv file, return a proper flash message if it's not
+        if file.filename.lower().endswith(('.csv')) == False:
+            # Code should check if the file is a .csv file otherwise reject with a flash
+            flash('Selected file is not a .csv', "warning")
+            return redirect(request.url)
+
         if file and secure_filename(file.filename):
             companies = []
             employees = []
@@ -33,33 +40,55 @@ def importCSV():
             # Note: this reads the file as a stream instead of requiring us to save it
             stream = io.TextIOWrapper(file.stream._file, "UTF8", newline=None)
             # TODO importcsv-2 read the csv file stream as a dict
-            for row in ...:
+            reader = csv.DictReader(stream)
+            for row in reader:
                 # print(row) #example
                 # TODO importcsv-3 extract company data and append to company list as a dict only with company data
-
+                company = {
+                    "name": row['company_name'],
+                    "address": row['address'],
+                    "city": row['city'],
+                    "country": row['country'],
+                    "state": row['state'],
+                    "zip": row['zip'],
+                    "website": row['web'],
+                }
+                companies.append(company)
                 # TODO importcsv-4 extract employee data and append to employee list as a dict only with employee data
-                pass
+                employee = {
+                    "first_name": row['first_name'],
+                    "last_name": row['last_name'],
+                    "email": row['email'],
+                    "company_name": row['company_name'],
+                }
+                employees.append(employee)
                
             if len(companies) > 0:
                 print(f"Inserting or updating {len(companies)} companies")
                 try:
                     result = DB.insertMany(company_query, companies)
                     # TODO importcsv-5 display flash message about number of companies inserted
+                    if result.status == True:
+                        companies_count_query = """SELECT COUNT(id) FROM `IS601_MP2_Companies`"""
+                        flash(f"Inserted or updated {len(companies)} companies", "success")
                 except Exception as e:
                     traceback.print_exc()
                     flash("There was an error loading in the csv data", "danger")
             else:
                 # TODO importcsv-6 display flash message (info) that no companies were loaded
-                pass
+                flash("No companies were loaded", "info")
             if len(employees) > 0:
                 print(f"Inserting or updating {len(employees)} employees")
                 try:
                     result = DB.insertMany(employee_query, employees)
                     # TODO importcsv-7 display flash message about number of employees loaded
+                    if result.status == True:
+                        employees_count_query = """SELECT COUNT(id) FROM `IS601_MP2_Employees`"""
+                        flash(f"Inserted or updated {len(employees)} employees", "success")
                 except Exception as e:
                     traceback.print_exc()
                     flash("There was an error loading in the csv data", "danger")
             else:
                  # TODO importcsv-8 display flash message (info) that no companies were loaded
-                pass
+                flash("No employees were loaded", "info")
     return render_template("upload.html")
