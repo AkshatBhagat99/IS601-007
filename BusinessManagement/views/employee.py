@@ -24,8 +24,8 @@ def search():
     allowed_columns = ["first_name", "last_name", "email", "company_name"]
     # TODO search-2 get fn, ln, email, company, column, order, limit from request args
     
-    fn = request.args.get("first_name")
-    ln = request.args.get("last_name")
+    fn = request.args.get("fn")
+    ln = request.args.get("ln")
     email = request.args.get("email")
     company = request.args.get("company_name")
     column = request.args.get("column")
