@@ -2,7 +2,26 @@
 {% block title %}Company Directory{% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <div class="h3 text-center">Company Directory</div>
+    <div class="h1 text-center">Company Directory</div>
+    <form class="row row-cols-lg-auto g-3 align-items-center">
+        <div class="col-12">
+            <label class="visually-hidden" for="name">Name</label>
+            <input type="text" name="name" class="form-control" id="Name" placeholder="name"
+                value="{{request.args.get('name') or ''}}">
+        </div>
+        <div class="col-12">
+            <label class="visually-hidden" for="order">Order</label>
+            <select class="form-select" id="order" name="order" value="{{request.args.get('order')}}">
+                <option value="">Choose...</option>
+                <option {{'selected' if request.args.get('order')=="asc" }} value="asc">+</option>
+                <option {{'selected' if request.args.get('order')=="desc" }} value="desc">-</option>
+            </select>
+        </div>
+        <div class="col-12">
+            <label class="visually-hidden" for="limit">Limit</label>
+            <input class="form-control" type="number" min="1" max="100" id="limit" name="limit"
+                value="{{request.args.get('limit') or '10'}}" />
+        </div>
     {# TODO
     build a horizontal filter/sort form with
     name (company name)
@@ -12,53 +31,48 @@
     ensure all fields prefill with request arg data if provided
     #}
     <form method="GET">
-        <h5>Filter</h5>
-
-        <div class="col-12" >
-            <input class="form-control" id="name" name="name" type="text" placeholder="Company Name"  value="{{request.args.get('name', '')}}" />
-        </div>
         {% with layout = "horizontal" %}
         {% include "country_state_selector.html" %}
         {% endwith %}
-        <br>
-        <h5>Sort by</h5>
-        {% with cols = allowed_columns %}
+        {% with cols = [] %}
         {% include "sort_filter.html" %}
         {% endwith %}
-        <br>
-        <h5>Limit</h5>
-        <div class="col-12" >
-            <input class="form-control" id="limit" name="limit" value="{{request.args.get('limit', '')}}" type="number" min="1" max="100" placeholder="Limit" />
+        
+        <div class="col-12">
+            <input type="submit" class="btn btn-primary mb-lg-0" value="Filter" />
         </div>
-        <br>
-        <div class="row">        
-            <div class="col-3">
-                <input type="submit" class="btn btn-primary" value="Filter" />
-            </div>
-            <div class="col-3">
-                <a href="?" class="btn btn-secondary">Reset</a>
-            </div>
+        <div class="col-12">
+            <a href="?" class="btn btn-secondary">Reset</a>
         </div>
     </form>
     <div class="table-responsive">
     <table class="table">
-        {% if rows and rows|length > 0 %}
+        {% if resp and resp|length > 0 %}
         <thead>
             <tr class="text-capitalize">
+                {% for r in resp[0] %}
+                <th>{{r}}</th>
+                {% endfor %}
                 {# generate th tags for each column to display #}
                 {# IMPORTANT use table column names as the headings, replace _ with space #}
-                <th>Name</th>
-                <th>Address</th>
-                <th>City</th>
-                <th>Country</th>
-                <th>State</th>
-                <th>Zip</th>
-                <th>Website</th>
-                <th>Employees</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
+            {% for r in resp %}
+            <tr>
+            {% for v in r.values() %}
+                <td>{{v}}</td>
+                {% endfor %}
+                <td><a href="{{url_for('employee.search', company_id=r.get('id'), company_name=r.get('name'),**request.args)}}" class="btn btn-secondary btn-sm">View</a>
+                    <a href="{{url_for('company.edit', id=r.get('id'))}}" class="btn btn-secondary btn-sm">Edit</a>
+                    {# **request.args spreads the key value pairs to be part of the url#}
+                    {# the idea is to pass it to the next route #}
+                    <a href="{{url_for('company.delete', id=r.get('id'), **request.args)}}"
+                        class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
             {# generate tr with td tags for each piece of data #}
             {# if the td is for website, display it as a link where the text is "website" and the url is the
             website url #}
@@ -68,22 +82,6 @@
             an edit button that passes the company id to company edit
             a delete button that passes the company id and the request args to the company delete route
             #}
-            {% for row in rows %}
-            <tr>
-                <td>{{row.name}}</td>
-                <td>{{row.address}}</td>
-                <td>{{row.city}}</td>
-                <td>{{row.country}}</td>
-                <td>{{row.state}}</td>
-                <td>{{row.zip}}</td>
-                <td><a href="{{row.website}}">{{row.website}}</a></td>
-                <td>{{row.employees}}</td>
-                <td>
-                    <a class="btn btn-primary" href="{{ url_for('company.edit', id=row['id'], country=row.country, state=row.state) }}" role="button">Edit</a>
-                    <a class="btn btn-danger" href="{{ url_for('company.delete', id=row['id']) }}" role="button">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
         </tbody>
         {% else %}
         <tbody>
