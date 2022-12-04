@@ -16,7 +16,7 @@ def search():
             rows = resp.rows
         return render_template("list_employees.html", resp=rows)
     rows = []
-    # DO NOT DELETE PROVIDED COMMENTS
+    # DO NOT DELETE PROVIDED COMMENTS                                                                                   ab2634 3 december 2022
     # TODO search-1 retrieve employee id as id, first_name, last_name, email, company_id, company_name using a LEFT JOIN
     query = """SELECT e.id, e.first_name, e.last_name, e.email, e.company_id, c.name as company_name
     FROM IS601_MP2_Employees as e LEFT JOIN IS601_MP2_Companies as c ON c.id=e.company_id WHERE 1=1"""
@@ -43,7 +43,7 @@ def search():
     if email:
         query += " AND email like %s"
         args.append(f'%{email}%')
-    # TODO search-6 append equality filter for company_id if provided
+    # TODO search-6 append equality filter for company_id if provided   ab2634 3 december 2022
     if company:
         query += " AND company_id = %s"
         args.append(int(company))
@@ -60,7 +60,7 @@ def search():
         # this connector
         query += " LIMIT %s"
         args.append(int(limit))
-    # TODO search-9 provide a proper error message if limit isn't a number or if it's out of bounds
+    # TODO search-9 provide a proper error message if limit isn't a number or if it's out of bounds   ab2634 3 december 2022
     else:
         flash("Limit out of bounds", "danger")
         return redirect(url_for("employee.search"))
@@ -85,7 +85,7 @@ def add():
         # TODO add-3 last_name is required (flash proper error message)
         # TODO add-4 company (may be None)
         # TODO add-5 email is required (flash proper error message)
-        
+        #ab2634 3 december 2022
         fn = request.form.get("first_name")
         ln = request.form.get("last_name")
         company = request.form.get("company",None)
@@ -118,7 +118,7 @@ def edit():
     if id is None:
         flash("ID is missing", "danger")
         return redirect(url_for("employee.search"))
-    else: # TODO update this for TODO edit-1
+    else: # TODO update this for TODO edit-1               ab2634 3 december 2022
         if request.method == "POST":
             # TODO edit-1 retrieve form data for first_name, last_name, company, email
             # TODO edit-2 first_name is required (flash proper error message)
@@ -148,7 +148,7 @@ def edit():
                     if result.status:
                         flash("Updated record", "success")
             except Exception as e:
-                # TODO edit-7 make this user-friendly
+                # TODO edit-7 make this user-friendly                         ab2634 3 december 2022
                 flash("Data cannot be updated", "danger")
         try:
             # TODO edit-8 fetch the updated data (including company_name)
