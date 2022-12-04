@@ -62,7 +62,7 @@ def search():
 @company.route("/add", methods=["GET","POST"])
 def add():
     if request.method == "POST":
-        # TODO add-1 retrieve form data for name, address, city, state, country, zip, website
+        # TODO add-1 retrieve form data for name, address, city, state, country, zip, website            ab2634 3 december 2022
         # TODO add-2 name is required (flash proper error message)
         # TODO add-3 address is required (flash proper error message)
         # TODO add-4 city is required (flash proper error message)
@@ -93,10 +93,10 @@ def add():
             return redirect(url_for("company.add"))
         has_error = False # use this to control whether or not an insert occurs
         if not has_error:
-            try:
+            try:# TODO add-8 add query and add arguments ab2634 3 december 2022
                 result = DB.insertOne("""INSERT INTO IS601_MP2_Companies (name, address,city,state,country,zip,website)
                 VALUES(%s, %s, %s, %s, %s, %s, %s)"""
-                ,name, address,city,state,country,zipcode,website) # <-- TODO add-8 add query and add arguments
+                ,name, address,city,state,country,zipcode,website) 
                 if result.status:
                     flash("Company has been added successfully", "success")
             except Exception as e:
