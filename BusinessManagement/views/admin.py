@@ -18,7 +18,7 @@ def importCSV():
             flash('No selected file', "warning")
             return redirect(request.url)
         # TODO importcsv-1 check that it's a .csv file, return a proper flash message if it's not
-        #try:
+        #try: #ab2634 3 december 2022
         file_name=file.filename.split('.')
         if file and secure_filename(file.filename) and file_name[1]=='csv':
         #if file and secure_filename(file.filename):
@@ -38,7 +38,7 @@ def importCSV():
             stream = io.TextIOWrapper(file.stream._file, "UTF8", newline=None)
             # TODO importcsv-2 read the csv file stream as a dict
             for row in csv.DictReader(stream, delimiter=','):
-                #print(row) #example
+                #print(row) #example                                                                                     #ab2634 3 december 2022
                 # TODO importcsv-3 extract company data and append to company list as a dict only with company data
 
                 # TODO importcsv-4 extract employee data and append to employee list as a dict only with employee data
@@ -53,7 +53,7 @@ def importCSV():
                 print(f"Inserting or updating {len(companies)} companies")
                 try:
                     result = DB.insertMany(company_query, companies)
-                    # TODO importcsv-5 display flash message about number of companies inserted
+                    # TODO importcsv-5 display flash message about number of companies inserted  ab2634 3 december 2022
                     flash(f"{len(companies)} company records inserted","success")
                 except Exception as e:
                     traceback.print_exc()
