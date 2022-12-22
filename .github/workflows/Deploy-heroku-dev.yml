@@ -6,12 +6,7 @@ name: Deploy to heroku dev.
 on:
   push:
     branches:
-<<<<<<< HEAD
       - dev3
-=======
-      - dev2
-
->>>>>>> f41f444c903fa8690736df0d667b6d3615abd46a
       - ms2
 
 
