@@ -10,7 +10,6 @@ on:
 
       - ms2
 
-      - milestone2
 
 
 # Your workflows jobs.
@@ -25,7 +24,6 @@ jobs:
 
       WORKING_DIRECTORY: bank
 
-      WORKING_DIRECTORY: Shop
 
     defaults:
       run:
