@@ -23,7 +23,7 @@ jobs:
       PORT: 8080
       # change to the project directory you're deploying
 
-      WORKING_DIRECTORY: shop
+      WORKING_DIRECTORY: Shop
 
 
     defaults:
