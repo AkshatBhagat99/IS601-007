@@ -23,7 +23,6 @@ jobs:
 
       WORKING_DIRECTORY: bank
 
-      WORKING_DIRECTORY: Shop
 
     defaults:
       run:
